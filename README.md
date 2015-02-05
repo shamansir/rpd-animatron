@@ -7,4 +7,6 @@ See http://github.com/shamansir/rpd for RPD Engine code, detailed information an
 This README will also be improved at some point, but for now this repo is just a
 submodule for http://github.com/shamansir/rpd.
 
-It can be used with compiled RPD engine as an independent toolkit, of course.
+It can be used as an independent toolkit with compiled RPD engine, of course.
+
+[An online playground with Animatron toolkit](http://shamansir.github.io/rpd/examples/anm.html).
