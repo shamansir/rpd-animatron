@@ -7,4 +7,4 @@ See http://github.com/shamansir/rpd for RPD Engine code, detailed information an
 This README will also be improved at some point, but for now this repo is just a
 submodule for http://github.com/shamansir/rpd.
 
-It can be used with compiled RPD engine as an independent toolkit, of course. (`Makefile` will build it, at some point).
+It can be used with compiled RPD engine as an independent toolkit, of course.
