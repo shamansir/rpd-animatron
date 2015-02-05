@@ -23,10 +23,18 @@ git tag -af <last-RPD-version> -m "Compatible with <last-RPD-version>"
 git push --force origin --tags
 ``` 
 
-In the root or RPD repository copy, you should do:
+In the body of this repository copy, inside RPD engine repository, you should do:
 
 ```
 git fetch origin
+git merge origin/...
 git fetch origin --tags
+```
+
+Then get back to the higher level of RPD (or even a root directory), and perform:
+
+```
 git submodule update --recursive
 ```
+
+That should be it.
