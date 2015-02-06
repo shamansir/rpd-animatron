@@ -6,8 +6,17 @@ Rpd.channeltype('anm/color', {
     }
 });
 
-Rpd.channeltype('anm/element', {
-    show: function(val) { return val ? '[Element]' : '[Nothing]' }
+Rpd.channeltype('anm/elements', {
+    adapt: function(val) {
+        if (Array.isArray(val)) return val;
+        if (val instanceof anm.Element) return [ val ];
+        return []; },
+    show: function(val) {
+        if (!val) return '[Nothing]';
+        if (!val.length) return '[No Elements]';
+        if (val.length === 1) return '[Element]';
+        return '[' + val.length + ' Elements]';
+    }
 });
 
 Rpd.nodetype('anm/color', {
@@ -38,7 +47,7 @@ Rpd.nodetype('anm/element', function() {
             'color': { type: 'anm/color', default: 'rgba(99, 255, 255, 1)' }
         },
         outlets: {
-            'element': { type: 'anm/element', default: null }
+            'element': { type: 'anm/elements', default: null }
         },
         process: function(inlets) {
             if (!element) {

@@ -18,3 +18,7 @@
     position: relative;
     top: 2px;
 }
+
+.rpd-outlet.rpd-anm-elements {
+    min-width: 6em;
+}
