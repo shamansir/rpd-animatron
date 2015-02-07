@@ -49,12 +49,16 @@ Rpd.nodetype('anm/linear-spread', {
         'number': { type: 'anm/numbers' }
     },
     process: function(inlets) {
-        var target = [];
         var min = (inlets.min || 0),
             max = (inlets.max || 0),
             count = (inlets.count || 1);
-        var step = (max - min) / (count - 1);
-        for (var v = min; v <= max; v += step) { target.push(v); }
+        var target = [];
+        if (min !== max) {
+            var step = (max - min) / (count - 1);
+            for (var v = min; v <= max; v += step) { target.push(v); }
+        } else {
+            while (count--) { target.push(min); }
+        }
         return { 'number': makeSpread(target, NUMBERS) };
     }
 });
