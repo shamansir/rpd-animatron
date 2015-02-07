@@ -21,6 +21,9 @@ Spread.prototype.map = function(f) {
 Spread.prototype.tap = function(f) {
     this.value.forEach(f);
 }
+Spread.prototype.reduce = function(f) {
+    return new Spread([ this.value.reduce(f) ], this.type);
+}
 Spread.prototype.merge = function(other, f) {
     return Spread.merge([ this, other ], this.type, f);
 }
@@ -65,8 +68,8 @@ Spread.merge = function(spreads, type, f) {
         spreads.forEach(function(spread) {
             if (spread) {
                 values.push(spread.value[
-                    (spread.value.length < val_idx) ? val_idx
-                                                    : (val_idx % spread.value.length)
+                    (val_idx < spread.length()) ? val_idx
+                                                : (val_idx % spread.length())
                 ]);
             } else { values.push(null); }
         });

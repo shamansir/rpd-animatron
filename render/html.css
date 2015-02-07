@@ -1,8 +1,13 @@
-.rpd-node.rpd-anm-color .rpd-body {
+.rpd-anm-tk-node .rpd-inlet,
+.rpd-anm-tk-node .rpd-outlet {
+    white-space: nowrap;
+}
+
+.rpd-anm-tk-node.rpd-anm-color .rpd-body {
     padding: 2px 8px;
 }
 
-.rpd-node.rpd-anm-color .rpd-body div > span {
+.rpd-anm-tk-node.rpd-anm-color .rpd-body div > span {
     display: block;
     float: left;
     width: 10px;
@@ -11,8 +16,8 @@
     border: 1px solid #000;
 }
 
-.rpd-inlet.rpd-anm-colors .rpd-value.rpd-anm-one-color,
-.rpd-outlet.rpd-anm-colors .rpd-value.rpd-anm-one-color {
+.rpd-anm-tk-node .rpd-inlet.rpd-anm-colors .rpd-value.rpd-anm-one-color,
+.rpd-anm-tk-node .rpd-outlet.rpd-anm-colors .rpd-value.rpd-anm-one-color {
     display: block;
     width: 8px;
     height: 8px;
@@ -20,11 +25,16 @@
     border: 1px solid #000;
 }
 
-.rpd-inlet.rpd-anm-color .rpd-value.rpd-anm-one-color {
+.rpd-anm-tk-node .rpd-inlet.rpd-anm-color .rpd-value.rpd-anm-one-color {
     position: relative;
     top: 2px;
 }
 
-.rpd-outlet.rpd-anm-elements {
-    min-width: 6em;
+.rpd-anm-tk-node.rpd-anm-linear-spread .rpd-body div > span {
+    float: left;
+    clear: left;
+}
+
+.rpd-anm-tk-node.rpd-anm-linear-spread .rpd-body div > span:hover {
+    background-color: rgba(0,0,66,0.2);
 }

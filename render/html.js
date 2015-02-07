@@ -17,6 +17,22 @@ Rpd.noderenderer('anm/color', 'html', function() {
     };
 });
 
+Rpd.noderenderer('anm/linear-spread', 'html', {
+    always: function(bodyElm, inlets, outlets) {
+        clearNode(bodyElm);
+        if (outlets.number.length() === 0) {
+            bodyElm.innerText = bodyElm.textContent = '-';
+        } else {
+            var numElm;
+            outlets.number.tap(function(num) {
+                numElm = document.createElement('span');
+                numElm.innerText = numElm.textContent = num.toFixed(3);
+                bodyElm.appendChild(numElm);
+            });
+        }
+    }
+});
+
 /* Rpd.noderenderer('anm/element', 'html', function() {
     var player;
     return {
@@ -46,7 +62,11 @@ Rpd.channelrenderer('anm/colors', 'html', {
         if (value.length() == 1) {
             target.classList.add('rpd-anm-one-color');
             target.style.backgroundColor = value.get(0);
-        } else target.classList.remove('rpd-anm-one-color');
+        } else {
+            target.innerText = target.textContent = value.toString();
+            target.style.backgroundColor = 'transparent';
+            target.classList.remove('rpd-anm-one-color');
+        }
     }
 });
 

@@ -29,9 +29,33 @@ Rpd.nodetype('anm/color', {
         return { 'color':
             Spread.merge([ inlets.red, inlets.green, inlets.blue, inlets.alpha ], COLORS,
                          function(r, g, b, a) {
-                             return 'rgba('+(r || 0)+','+(g || 0)+','+(b || 0)+','+(a || 0)+')';
+                             return 'rgba(' + (r ? Math.round(r) : 0) + ',' +
+                                              (g ? Math.round(g) : 0) + ',' +
+                                              (b ? Math.round(b) : 0) + ',' +
+                                              (a || 0) + ')';
                          })
         };
+    }
+});
+
+Rpd.nodetype('anm/linear-spread', {
+    name: 'spread',
+    inlets: {
+        'min':   { type: 'core/number', default: 0 },
+        'max':   { type: 'core/number', default: 500 },
+        'count': { type: 'core/number', default: 5 }
+    },
+    outlets: {
+        'number': { type: 'anm/numbers' }
+    },
+    process: function(inlets) {
+        var target = [];
+        var min = (inlets.min || 0),
+            max = (inlets.max || 0),
+            count = (inlets.count || 1);
+        var step = (max - min) / (count - 1);
+        for (var v = min; v <= max; v += step) { target.push(v); }
+        return { 'number': makeSpread(target, NUMBERS) };
     }
 });
 
@@ -50,7 +74,7 @@ Rpd.nodetype('anm/rect', {
     name: 'rect',
     inlets: {
         'point': { type: 'anm/points' },
-        'color': { type: 'anm/points' },
+        'color': { type: 'anm/colors' },
         'size':  { type: 'anm/points' } // FIXME
     },
     outlets: {
