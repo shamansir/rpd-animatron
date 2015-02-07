@@ -1,12 +1,18 @@
-.rpd-anm-color-body {
-    width: 30px;
-    height: 30px;
-    border-radius: 3px;
+.rpd-node.rpd-anm-color .rpd-body {
+    padding: 2px 8px;
+}
+
+.rpd-node.rpd-anm-color .rpd-body div > span {
+    display: block;
+    float: left;
+    width: 10px;
+    height: 10px;
+    /* border-radius: 3px; */
     border: 1px solid #000;
 }
 
-.rpd-inlet.rpd-anm-color .rpd-value,
-.rpd-outlet.rpd-anm-color .rpd-value {
+.rpd-inlet.rpd-anm-colors .rpd-value.rpd-anm-one-color,
+.rpd-outlet.rpd-anm-colors .rpd-value.rpd-anm-one-color {
     display: block;
     width: 8px;
     height: 8px;
@@ -14,7 +20,7 @@
     border: 1px solid #000;
 }
 
-.rpd-inlet.rpd-anm-color .rpd-value {
+.rpd-inlet.rpd-anm-color .rpd-value.rpd-anm-one-color {
     position: relative;
     top: 2px;
 }

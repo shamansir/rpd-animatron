@@ -1,18 +1,23 @@
 Rpd.noderenderer('anm/color', 'html', function() {
-    var colorElm;
+    var colorsElm;
     return {
         first: function(bodyElm) {
-            colorElm = document.createElement('div');
-            colorElm.classList.add('rpd-anm-color-body');
-            bodyElm.appendChild(colorElm);
+            colorsElm = document.createElement('div');
+            bodyElm.appendChild(colorsElm);
         },
         always: function(bodyElm, inlets, outlets) {
-            colorElm.style.backgroundColor = outlets.color;
+            clearNode(colorsElm);
+            var colorElm;
+            outlets.color.tap(function(color) {
+                colorElm = document.createElement('span');
+                colorElm.style.backgroundColor = color;
+                colorsElm.appendChild(colorElm);
+            });
         }
     };
 });
 
-Rpd.noderenderer('anm/element', 'html', function() {
+/* Rpd.noderenderer('anm/element', 'html', function() {
     var player;
     return {
         first: function(bodyElm) {
@@ -33,11 +38,18 @@ Rpd.noderenderer('anm/element', 'html', function() {
             //colorElm.style.backgroundColor = outlets.color;
         }
     };
-});
+}); */
 
 
-Rpd.channelrenderer('anm/color', 'html', {
+Rpd.channelrenderer('anm/colors', 'html', {
     show: function(target, value, repr) {
-        target.style.backgroundColor = repr || value;
+        if (value.length() == 1) {
+            target.classList.add('rpd-anm-one-color');
+            target.style.backgroundColor = value.get(0);
+        } else target.classList.remove('rpd-anm-one-color');
     }
 });
+
+function clearNode(node) {
+    while (node.firstChild) { node.removeChild(node.firstChild); }
+}
