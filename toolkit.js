@@ -1,3 +1,5 @@
+var S = makeSpread;
+
 Rpd.channeltype('anm/color', {
     accept: function(val) {
         return (typeof val === 'string') &&
