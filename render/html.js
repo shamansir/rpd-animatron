@@ -17,7 +17,7 @@ Rpd.noderenderer('anm/pair', 'html',
 );
 
 function renderSpread(prop, f) {
-    return (function() {
+    return function() {
         var holder;
         return {
             first: function(bodyElm) {
@@ -38,7 +38,7 @@ function renderSpread(prop, f) {
                 }
             }
         }
-    })();
+    };
 }
 
 Rpd.noderenderer('anm/render', 'html', function() {
