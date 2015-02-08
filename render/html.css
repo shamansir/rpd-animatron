@@ -16,6 +16,11 @@
     border: 1px solid #000;
 }
 
+.rpd-anm-tk-node.rpd-anm-color .rpd-body td > div {
+    max-height: 300px;
+    overflow: scroll;
+}
+
 .rpd-anm-tk-node .rpd-inlet.rpd-anm-colors .rpd-value.rpd-anm-one-color,
 .rpd-anm-tk-node .rpd-outlet.rpd-anm-colors .rpd-value.rpd-anm-one-color {
     display: block;
@@ -37,4 +42,9 @@
 
 .rpd-anm-tk-node.rpd-anm-linear-spread .rpd-body div > span:hover {
     background-color: rgba(0,0,66,0.2);
+}
+
+.rpd-anm-tk-node.rpd-anm-linear-spread .rpd-body td > div {
+    max-height: 200px;
+    overflow: scroll;
 }

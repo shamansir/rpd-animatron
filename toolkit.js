@@ -38,7 +38,7 @@ Rpd.nodetype('anm/color', {
     }
 });
 
-Rpd.nodetype('anm/linear-spread', {
+Rpd.nodetype('anm/spread', {
     name: 'spread',
     inlets: {
         'min':   { type: 'core/number', default: 0 },
@@ -55,7 +55,7 @@ Rpd.nodetype('anm/linear-spread', {
         var target = [];
         if (min !== max) {
             var step = (max - min) / (count - 1);
-            for (var v = min; v <= max; v += step) { target.push(v); }
+            for (var v = min, done = 0; done < count; v += step, done++) { target.push(v); }
         } else {
             while (count--) { target.push(min); }
         }
