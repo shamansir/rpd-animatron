@@ -1,60 +1,71 @@
-Rpd.noderenderer('anm/color', 'html', function() {
-    var colorsElm;
-    return {
-        first: function(bodyElm) {
-            colorsElm = document.createElement('div');
-            bodyElm.appendChild(colorsElm);
-        },
-        always: function(bodyElm, inlets, outlets) {
-            clearNode(colorsElm);
-            var colorElm;
-            outlets.color.tap(function(color) {
-                colorElm = document.createElement('span');
-                colorElm.style.backgroundColor = color;
-                colorsElm.appendChild(colorElm);
-            });
-        }
-    };
-});
+Rpd.noderenderer('anm/color', 'html',
+    renderSpread('color', function(elm, color) {
+        elm.style.backgroundColor = color;
+    })
+);
 
-Rpd.noderenderer('anm/linear-spread', 'html', {
-    always: function(bodyElm, inlets, outlets) {
-        clearNode(bodyElm);
-        if (outlets.number.length() === 0) {
-            bodyElm.innerText = bodyElm.textContent = '-';
-        } else {
-            var numElm;
-            outlets.number.tap(function(num) {
-                numElm = document.createElement('span');
-                numElm.innerText = numElm.textContent = num.toFixed(3);
-                bodyElm.appendChild(numElm);
-            });
-        }
-    }
-});
+Rpd.noderenderer('anm/spread', 'html',
+    renderSpread('number', function(elm, num) {
+        elm.innerText = elm.textContent = num.toFixed(3);
+    })
+);
 
-/* Rpd.noderenderer('anm/element', 'html', function() {
+Rpd.noderenderer('anm/pair', 'html',
+    renderSpread('pair', function(elm, pair) {
+        elm.innerText = elm.textContent = pair.toString();
+    })
+);
+
+function renderSpread(prop, f) {
+    return (function() {
+        var holder;
+        return {
+            first: function(bodyElm) {
+                holder = document.createElement('div');
+                bodyElm.appendChild(holder);
+            },
+            always: function(bodyElm, inlets, outlets) {
+                clearNode(holder);
+                if (outlets[prop].length() === 0) {
+                    holder.innerText = holder.textContent = '-';
+                } else {
+                    var itemElm;
+                    outlets[prop].tap(function(item) {
+                        itemElm = document.createElement('span');
+                        f(itemElm, item);
+                        holder.appendChild(itemElm);
+                    });
+                }
+            }
+        }
+    })();
+}
+
+Rpd.noderenderer('anm/render', 'html', function() {
     var player;
     return {
         first: function(bodyElm) {
             var trg = document.createElement('div');
             bodyElm.appendChild(trg);
             player = anm.createPlayer(trg, {
-                width: 100,
-                height: 100,
+                width: 140,
+                height: 140,
                 controlsEnabled: false,
                 repeat: true
             });
         },
         always: function(bodyElm, inlets, outlets) {
-            if (!outlets.element) return;
+            if (!inlets.what || inlets.what.empty()) return;
             player.stop();
-            player.load(outlets.element);
+            var root = new anm.Element();
+            inlets.what.tap(function(element) {
+                root.add(element);
+            });
+            player.load(root);
             player.play();
-            //colorElm.style.backgroundColor = outlets.color;
         }
     };
-}); */
+});
 
 
 Rpd.channelrenderer('anm/colors', 'html', {

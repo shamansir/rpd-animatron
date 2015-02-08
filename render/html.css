@@ -35,16 +35,19 @@
     top: 2px;
 }
 
-.rpd-anm-tk-node.rpd-anm-linear-spread .rpd-body div > span {
+.rpd-anm-tk-node.rpd-anm-spread .rpd-body div > span,
+.rpd-anm-tk-node.rpd-anm-pair .rpd-body div > span {
     float: left;
     clear: left;
 }
 
-.rpd-anm-tk-node.rpd-anm-linear-spread .rpd-body div > span:hover {
+.rpd-anm-tk-node.rpd-anm-spread .rpd-body div > span:hover,
+.rpd-anm-tk-node.rpd-anm-pair .rpd-body div > span:hover {
     background-color: rgba(0,0,66,0.2);
 }
 
-.rpd-anm-tk-node.rpd-anm-linear-spread .rpd-body td > div {
+.rpd-anm-tk-node.rpd-anm-spread .rpd-body td > div,
+.rpd-anm-tk-node.rpd-anm-pair .rpd-body td > div {
     max-height: 200px;
     overflow: scroll;
 }

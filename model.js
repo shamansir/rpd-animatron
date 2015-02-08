@@ -15,6 +15,9 @@ Spread.prototype.get = function(i) {
 Spread.prototype.length = function() {
     return this.value.length;
 }
+Spread.prototype.empty = function() {
+    return this.value.length === 0;
+}
 Spread.prototype.map = function(f) {
     return new Spread(this.value.map(f), this.type);
 }
@@ -77,6 +80,14 @@ Spread.merge = function(spreads, type, f) {
     });
     if (f) { target = target.map(function(v) { return f.apply(null, v); }); };
     return new Spread(target, type);
+}
+
+function Pair(a, b) {
+    this.a = a || 0;
+    this.b = b || 0;
+}
+Pair.prototype.toString = function() {
+    return this.a.toFixed(1) + ' : ' + this.b.toFixed(1);
 }
 
 function isDefined(v) {
