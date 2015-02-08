@@ -17,7 +17,7 @@ Rpd.noderenderer('anm/pair', 'html',
 );
 
 function renderSpread(prop, f) {
-    return (function() {
+    return function() {
         var holder;
         return {
             first: function(bodyElm) {
@@ -38,7 +38,7 @@ function renderSpread(prop, f) {
                 }
             }
         }
-    })();
+    };
 }
 
 Rpd.noderenderer('anm/render', 'html', function() {
@@ -58,8 +58,9 @@ Rpd.noderenderer('anm/render', 'html', function() {
             if (!inlets.what || inlets.what.empty()) return;
             player.stop();
             var root = new anm.Element();
-            inlets.what.tap(function(element) {
-                root.add(element);
+            inlets.what.tap(function(child) {
+                if (!child) return;
+                root.add(child);
             });
             player.load(root);
             player.play();

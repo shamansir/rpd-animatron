@@ -120,3 +120,24 @@ Rpd.nodetype('anm/render', function() {
         process: function() { }
     };
 });
+
+Rpd.nodetype('anm/cross', {
+    name: 'cross',
+    inlets: {
+        'parent': { type: 'anm/elements' },
+        'child': { type: 'anm/elements' }
+    },
+    outlets: {
+        'parent': { type: 'anm/elements' }
+    },
+    process: function(inlets) {
+        return { 'parent':
+            Spread.merge([ inlets.parent, inlets.child ], ELEMENTS,
+                         function(parent, child) {
+                            if (!parent || !child) return (parent || child);
+                            if (parent === child) return;
+                            return parent.add(child);
+                         })
+        };
+    }
+});
