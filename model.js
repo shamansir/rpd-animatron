@@ -93,3 +93,136 @@ Pair.prototype.toString = function() {
 function isDefined(v) {
     return (typeof v !== 'undefined') && (v !== null);
 }
+
+
+
+
+
+/* function spread(fn) {
+    return Kefir.fromBinder(fn());
+}
+
+function numericSpread(min, max, count) {
+
+}
+
+function sigNumericSpread(signal, min, max, count) {
+
+}
+
+function rgbaColorSpread(red, blue, green, alpha) {
+
+}
+
+function hslaColorSpread(red, blue, green, alpha) {
+
+}
+
+function pairSpread(first, second) {
+
+}
+
+function elementSpread(nextElement) {
+
+}
+
+var s = new Spread(function() {
+    var count = 5;
+    return function(values) {
+        while (count--) {
+            values.emit(count);
+        }
+        values.end();
+    };
+});
+
+function isDefined(v) {
+    return (typeof v !== 'undefined') && (v !== null);
+}
+
+s.get().map(function(v) { return 1 / v; }).log('first');
+s.get().log('second');
+
+
+
+*/
+
+/*
+function repeat(fn, onCycle) {
+  return Kefir.fromBinder(function(sink) {
+    var stream, valHandler, endHandler, cycle = 0;
+    function sub() {
+        valHandler = function(v) { sink.emit(v); };
+        endHandler = function() {
+            if (onCycle && !onCycle(cycle++)) return;
+            sub();
+        };
+        stream = fn();
+        stream.onValue(valHandler).onEnd(endHandler);
+    }
+    sub();
+    return function() {
+      stream.offValue(valHandler).offEnd(endHandler);
+    };
+  });
+}
+
+
+function Spread(type, fn) {
+    this.type = type;
+    this.fn = fn;
+}
+
+Spread.prototype.iter = function() {
+    return Kefir.fromBinder(this.fn());
+}
+
+function numericSpread(min, max, count) {
+    return new Spread('num', function() {
+        var step = (max - min) / (count - 1);
+        return (function(count) { return function(values) {
+            var nextVal = min;
+            while (count--) {
+                values.emit(nextVal);
+                nextVal += step;
+            }
+            values.end();
+        } })(count);
+    });
+}
+
+function sigNumericSpread(signal, min, max, count) {
+
+}
+
+function rgbaColorSpread(red, green, blue, alpha) {
+    return repeat(function() { return red.iter(); },
+                  function(cycle) { return (cycle < 7); });
+    // return Kefir.zip([ repeat(red),
+    //                   repeat(green),
+    //                   repeat(blue),
+    //                   repeat(alpha) ]);
+}
+
+function hslaColorSpread(red, green, blue, alpha) {
+
+}
+
+function pairSpread(first, second) {
+
+}
+
+function elementSpread(nextElement) {
+
+}
+
+function isDefined(v) {
+    return (typeof v !== 'undefined') && (v !== null);
+}
+
+numericSpread(0, 20, 5).iter().log();
+
+numericSpread(10, 100, 3).iter().log();
+
+rgbaColorSpread(numericSpread(0, 255, 5), numericSpread(0, 255, 10), numericSpread(0, 100, 3), numericSpread(0, 1, 8)).log();
+*/
