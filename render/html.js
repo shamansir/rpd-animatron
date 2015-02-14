@@ -57,6 +57,7 @@ Rpd.noderenderer('anm/render', 'html', function() {
         always: function(bodyElm, inlets, outlets) {
             if (!inlets.what || inlets.what.empty()) return;
             player.stop();
+            if (player.anim) player.anim.unregister();
             var root = new anm.Element();
             inlets.what.tap(function(child) {
                 if (!child) return;
