@@ -173,6 +173,8 @@ function Spread(type, fn) {
     this.fn = fn;
 }
 
+nextFn
+
 Spread.prototype.iter = function() {
     return Kefir.fromBinder(this.fn());
 }
@@ -226,3 +228,39 @@ numericSpread(10, 100, 3).iter().log();
 
 rgbaColorSpread(numericSpread(0, 255, 5), numericSpread(0, 255, 10), numericSpread(0, 100, 3), numericSpread(0, 1, 8)).log();
 */
+
+/* function numSpread(max, signal) {
+    if (signal) {
+        var value = 0;
+        return signal.map(function() { return value++; })
+                     .takeWhile(function(val) { return val < max;  });
+    } else {
+        return Kefir.fromBinder(function(emitter) {
+            var value = 0;
+            while (value < max) emitter.emit(value++);
+            emitter.end();
+        });
+    }
+}
+
+var e = Kefir.emitter();
+Kefir.repeat(function(i) {
+    if (i > 3) return;
+    return numSpread(5, e);
+}).log();
+e.emit();
+e.emit();
+e.emit();
+e.emit();
+e.emit();
+e.emit();
+e.emit();
+e.emit();
+e.emit();
+e.emit();
+e.emit();
+e.emit();
+e.emit();
+e.emit();
+e.emit();
+e.emit(); */
