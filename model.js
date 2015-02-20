@@ -229,24 +229,43 @@ numericSpread(10, 100, 3).iter().log();
 rgbaColorSpread(numericSpread(0, 255, 5), numericSpread(0, 255, 10), numericSpread(0, 100, 3), numericSpread(0, 1, 8)).log();
 */
 
-/* function numSpread(max, signal) {
-    if (signal) {
-        var value = 0;
-        return signal.map(function() { return value++; })
-                     .takeWhile(function(val) { return val < max;  });
-    } else {
-        return Kefir.fromBinder(function(emitter) {
+/* function numIter(max) {
+    return function(signal) {
+        if (signal) {
             var value = 0;
-            while (value < max) emitter.emit(value++);
-            emitter.end();
-        });
+            return signal.map(function() { return value++; })
+                         .takeWhile(function(val) { return val < max;  });
+        } else {
+            return Kefir.fromBinder(function(emitter) {
+                var value = 0;
+                while (value < max) emitter.emit(value++);
+                emitter.end();
+            });
+        }
     }
+}
+
+function joinIters(arr) {
+    var trg = [];
+    var signal = Kefir.emitter();
+    var finished = [];
+    for (var i = 0; i < arr.length; i++) {
+        trg.push(arr[i](signal).repeat((function(i) {
+            return function(cycle) {
+                if (cycle == 1) finished.push(i);
+                return arr[i](signal);
+            }
+        })(i)));
+    };
+    return Kefir.zip(trg).takeWhile(function() {
+        return finished.length < arr.length;
+    });
 }
 
 var e = Kefir.emitter();
 Kefir.repeat(function(i) {
     if (i > 3) return;
-    return numSpread(5, e);
+    return numIter(5)(e);
 }).log();
 e.emit();
 e.emit();
@@ -263,4 +282,6 @@ e.emit();
 e.emit();
 e.emit();
 e.emit();
-e.emit(); */
+e.emit();
+
+joinIters([ ]) */
