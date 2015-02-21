@@ -246,10 +246,10 @@ rgbaColorSpread(numericSpread(0, 255, 5), numericSpread(0, 255, 10), numericSpre
     }
 }
 
-function joinIters(arr, signal) {
+function joinIters(arr) {
     var trg = [];
     var finished = [];
-    //var signal = signal || Kefir.emitter();
+    var signal = signal || Kefir.emitter();
     for (var i = 0; i < arr.length; i++) {
         trg.push(Kefir.repeat((function(i) {
             return function(cycle) {
@@ -260,9 +260,17 @@ function joinIters(arr, signal) {
             }
         })(i)));
     };
-    return Kefir.zip(trg).takeWhile(function() {
+    var zipped = Kefir.zip(trg).takeWhile(function() {
         return (finished.length < arr.length);
     });
+    return function(fn_res, fn_sig) {
+        var stream_finished = false;
+        zipped.onEnd(function() { stream_finished = true; });
+        if (fn_res) zipped = fn_res(zipped);
+        if (fn_sig) signal = fn_sig(signal);
+        if (!zipped || !signal) return;
+        while (!stream_finished) signal.emit();
+    }
 }
 
 console.log('--------');
@@ -292,8 +300,10 @@ e.emit();
 
 console.log('--------');
 
-var sig = Kefir.emitter();
-sig.map(function() { return '!'; }).log('signal');
-var stream_finished = false;
-joinIters([ numIter(4), numIter(17), numIter(3) ], sig).onEnd(function() { stream_finished = true; }).log('zipped');
-while (!stream_finished) sig.emit(); */
+// var sig = Kefir.emitter();
+// sig.map(function() { return '!'; }).log('signal');
+// var stream_finished = false;
+// joinIters([ numIter(4), numIter(17), numIter(3) ], sig).onEnd(function() { stream_finished = true; }).log('zipped');
+// while (!stream_finished) sig.emit();
+
+joinIters([ numIter(4), numIter(17), numIter(3) ])(function(r) { r.log(); return r; }); */
