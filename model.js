@@ -233,8 +233,9 @@ rgbaColorSpread(numericSpread(0, 255, 5), numericSpread(0, 255, 10), numericSpre
     return function(signal) {
         if (signal) {
             var value = 0;
-            return signal.map(function() { return value++; })
-                         .takeWhile(function(val) { return val < max;  });
+            return signal.takeWhile(function() { return value < max; })
+                         .map(function() { console.log('iter('+max+')', value); return value++; })
+
         } else {
             return Kefir.fromBinder(function(emitter) {
                 var value = 0;
@@ -245,28 +246,33 @@ rgbaColorSpread(numericSpread(0, 255, 5), numericSpread(0, 255, 10), numericSpre
     }
 }
 
-function joinIters(arr) {
+function joinIters(arr, signal) {
     var trg = [];
-    var signal = Kefir.emitter();
     var finished = [];
+    //var signal = signal || Kefir.emitter();
     for (var i = 0; i < arr.length; i++) {
-        trg.push(arr[i](signal).repeat((function(i) {
+        trg.push(Kefir.repeat((function(i) {
             return function(cycle) {
-                if (cycle == 1) finished.push(i);
-                return arr[i](signal);
+                if (cycle === 1) {
+                    console.log('finish', i); finished.push(i);
+                }
+                return arr[i]((cycle > 0) ? signal.toProperty(undefined) : signal);
             }
         })(i)));
     };
     return Kefir.zip(trg).takeWhile(function() {
-        return finished.length < arr.length;
+        return (finished.length < arr.length);
     });
 }
+
+console.log('--------');
 
 var e = Kefir.emitter();
 Kefir.repeat(function(i) {
     if (i > 3) return;
     return numIter(5)(e);
 }).log();
+
 e.emit();
 e.emit();
 e.emit();
@@ -284,4 +290,10 @@ e.emit();
 e.emit();
 e.emit();
 
-joinIters([ ]) */
+console.log('--------');
+
+var sig = Kefir.emitter();
+sig.map(function() { return '!'; }).log('signal');
+var stream_finished = false;
+joinIters([ numIter(4), numIter(17), numIter(3) ], sig).onEnd(function() { stream_finished = true; }).log('zipped');
+while (!stream_finished) sig.emit(); */
