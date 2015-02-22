@@ -1,5 +1,3 @@
-Spread.STOP = '_STOP_';
-
 function Spread(type, iter_fn) {
     this.type = type;
     this.rule = function(signal) {
@@ -20,7 +18,18 @@ function Spread(type, iter_fn) {
 Spread.prototype.iter = function(signal) {
     return this.rule(signal);
 }
-Spread.cross = function(spreads) {
+Spread.prototype.is = function(type) {
+    return this.type === type;
+}
+Spread.prototype.toString = function() {
+    return '[' + this.type + ']';
+}
+Spread.is = function(val, type) {
+    if (!val) return false;
+    if (!(val instanceof Spread)) return false;
+    return val.is(type);
+}
+Spread.zip = function(spreads) {
     var trg = [];
     var finished = [];
     var signal = Kefir.emitter();
@@ -45,25 +54,69 @@ Spread.cross = function(spreads) {
     }
 }
 
-function numSpread(a, b) {
-    var min = Math.min(a, b),
-        max = Math.max(a, b);
-    return new Spread('num', function() {
-        var value = min;
+Spread.STOP = '_STOP_';
+
+Spread.EMPTY = 'Empty';
+Spread.ARRAY = 'Array';
+Spread.NUMBERS = 'Numbers';
+Spread.PAIRS = 'Pairs';
+Spread.COLORS = 'Colors';
+Spread.ELEMENTS = 'Elements';
+
+function emptySpread() {
+    return new Spread(Spread.EMPTY, function() {
         return function() {
-            if ((max - value) < 0) return Spread.STOP;
-            return value++;
+            return Spread.STOP;
+        };
+    })
+}
+
+function oneNumSpread(val) {
+    return new Spread(Spread.NUMBERS, function() {
+        var done = false;
+        return function() {
+            if (done) return Spread.STOP;
+            done = true;
+            return val;
+        }
+    });
+}
+
+function minMaxSpread(a, b, count) {
+    var min = Math.min(a, b) || 0,
+        max = Math.max(a, b) || 0;
+    return new Spread(Spread.NUMBERS, function() {
+        if (min !== max) {
+            var step = (max - min) / (count - 1);
+            var value = min;
+            return function() {
+                if (value > max) return Spread.STOP;
+                var current = value;
+                value += step;
+                return current;
+            };
+        } else {
+            return function() {
+                if (!count) return Spread.STOP;
+                count--; return min;
+            }
+        }
+    });
+}
+
+function arrSpread(arr) {
+    return new Spread(Spread.ARRAY, function() {
+        var i = 0, len = arr.length;
+        return function() {
+            if (i < arr.length) return arr[i++];
+            return Spread.STOP;
         };
     });
 }
 
-
 function Pair(a, b) {
     this.a = a || 0;
     this.b = b || 0;
-}
-Pair.prototype.toString = function() {
-    return this.a.toFixed(1) + ' : ' + this.b.toFixed(1);
 }
 
 function isDefined(v) {

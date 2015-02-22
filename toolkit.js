@@ -1,8 +1,10 @@
 function S(type) {
-    return function(v) { return makeSpread(v, type) };
+    return function(v) {
+        return makeSpread(v, type);
+    };
 };
 function stringify(v) { return v.toString(); };
-function accept(type) { return function(v) { return !v || (v.type && v.type === type); } };
+function accept(type) { return function(v) { return Spread.is(v, type); } };
 
 // spread types
 var NUMBERS = 'number',
