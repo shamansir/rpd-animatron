@@ -1,16 +1,15 @@
 function S(type) {
     return function(v) {
-        return makeSpread(v, type);
+        return Spread.adapt(v, type);
     };
-};
+}
 function stringify(v) { return v.toString(); };
 function accept(type) { return function(v) { return Spread.is(v, type); } };
 
-// spread types
-var NUMBERS = 'number',
-    PAIRS = 'pair',
-    COLORS = 'color',
-    ELEMENTS = 'element';
+var NUMBERS = Spread.NUMBERS,
+    PAIRS = Spread.PAIRS,
+    COLORS = Spread.COLORS,
+    ELEMENTS = Spread.ELEMENTS;
 
 Rpd.channeltype('anm/numbers',   { adapt: S(NUMBERS),  show: stringify });
 Rpd.channeltype('anm/pairs',     { adapt: S(PAIRS),    show: stringify, accept: accept(PAIRS)    });
@@ -28,17 +27,9 @@ Rpd.nodetype('anm/spread', {
         'number': { type: 'anm/numbers' }
     },
     process: function(inlets) {
-        var min = (inlets.min || 0),
-            max = (inlets.max || 0),
-            count = (inlets.count || 1);
-        var target = [];
-        if (min !== max) {
-            var step = (max - min) / (count - 1);
-            for (var v = min, done = 0; done < count; v += step, done++) { target.push(v); }
-        } else {
-            while (count--) { target.push(min); }
-        }
-        return { 'number': makeSpread(target, NUMBERS) };
+        return {
+            'number': minMaxSpread(inlets.min, inlets.max, inlets.count)
+        };
     }
 });
 
@@ -123,7 +114,7 @@ Rpd.nodetype('anm/render', function() {
     };
 });
 
-Rpd.nodetype('anm/cross', {
+/* Rpd.nodetype('anm/cross', {
     name: 'cross',
     inlets: {
         'parent': { type: 'anm/elements' },
@@ -142,4 +133,4 @@ Rpd.nodetype('anm/cross', {
                          })
         };
     }
-});
+}); */
