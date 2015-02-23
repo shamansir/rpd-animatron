@@ -40,7 +40,8 @@ Spread.zip = function(spreads, res_type, map_fn) {
             trg.push(Kefir.repeat((function(i) {
                 return function(cycle) {
                     if (cycle === 1) finished.push(i);
-                    return spreads[i].iter((cycle > 0) ? signal.toProperty(undefined) : signal);
+                    return (spreads[i] || Spread.empty)
+                           .iter((cycle > 0) ? signal.toProperty(undefined) : signal);
                 }
             })(i)));
         };
@@ -114,11 +115,14 @@ function minMaxSpread(a, b, count) {
         if (min !== max) {
             var step = (max - min) / (count - 1);
             var value = min;
+            var done = 0;
             return function() {
-                if (value > max) return Spread.STOP;
-                var current = value;
-                value += step;
-                return current;
+                if (done < count) {
+                    var current = value;
+                    value += step; done++;
+                    return current;
+                }
+                return Spread.STOP;
             };
         } else {
             return function() {
@@ -127,10 +131,6 @@ function minMaxSpread(a, b, count) {
             }
         }
     });
-}
-
-function colorSpread(reds, greens, blues, alphas) {
-    //return Spread.zip([ reds, greens, blues, alphas ])
 }
 
 // Pair
