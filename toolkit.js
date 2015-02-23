@@ -46,7 +46,7 @@ Rpd.nodetype('anm/color', {
     },
     process: function(inlets) {
         return { 'color':
-            Spread.merge([ inlets.red, inlets.green, inlets.blue, inlets.alpha ], COLORS,
+            Spread.zip([ inlets.red, inlets.green, inlets.blue, inlets.alpha ], COLORS,
                          function(r, g, b, a) {
                              return 'rgba(' + (r ? Math.round(r) : 0) + ',' +
                                               (g ? Math.round(g) : 0) + ',' +
@@ -68,7 +68,7 @@ Rpd.nodetype('anm/pair', {
     },
     process: function(inlets) {
         return { 'pair':
-            Spread.merge([ inlets.a, inlets.b ], PAIRS,
+            Spread.zip([ inlets.a, inlets.b ], PAIRS,
                          function(a, b) {
                             return new Pair(a, b);
                          })
@@ -88,7 +88,7 @@ Rpd.nodetype('anm/rect', {
     },
     process: function(inlets) {
         return { 'rect':
-            Spread.merge([ inlets.point, inlets.color, inlets.size ], ELEMENTS,
+            Spread.zip([ inlets.point, inlets.color, inlets.size ], ELEMENTS,
                          function(point, color, size) {
                             var point = point || new Pair(0, 0);
                             var color = color || '#000';

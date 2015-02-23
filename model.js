@@ -31,29 +31,36 @@ Spread.is = function(val, type) {
     if (!(val instanceof Spread)) return false;
     return val.is(type);
 }
-Spread.zip = function(spreads) {
-    var trg = [];
-    var finished = [];
-    var signal = Kefir.emitter();
-    for (var i = 0; i < spreads.length; i++) {
-        trg.push(Kefir.repeat((function(i) {
-            return function(cycle) {
-                if (cycle === 1) finished.push(i);
-                return spreads[i].iter((cycle > 0) ? signal.toProperty(undefined) : signal);
-            }
-        })(i)));
-    };
-    var zipped = Kefir.zip(trg).takeWhile(function() {
-        return (finished.length < spreads.length);
-    });
-    return function(fn_res, fn_sig) {
+Spread.zip = function(spreads, res_type, map_fn) {
+    return new Spread(res_type, function() {
+        var trg = [];
+        var finished = [];
+        var signal = Kefir.emitter();
+        for (var i = 0; i < spreads.length; i++) {
+            trg.push(Kefir.repeat((function(i) {
+                return function(cycle) {
+                    if (cycle === 1) finished.push(i);
+                    return spreads[i].iter((cycle > 0) ? signal.toProperty(undefined) : signal);
+                }
+            })(i)));
+        };
+        var zipped = Kefir.zip(trg).takeWhile(function() {
+            return (finished.length < spreads.length);
+        });
         var stream_finished = false;
+        var last_val;
+        if (map_fn) {
+            zipped = zipped.map(function(vals) { return map_fn.apply(null, vals); });
+        };
         zipped.onEnd(function() { stream_finished = true; });
-        if (fn_res) zipped = fn_res(zipped);
-        if (fn_sig) signal = fn_sig(signal);
-        if (!zipped || !signal) return;
-        while (!stream_finished) signal.emit();
-    }
+        zipped.onValue(function(v) { last_val = v; });
+        // Spread.iter has an internal signal, may we reuse it?
+        return function() {
+            if (stream_finished) return Spread.STOP;
+            signal.emit();
+            return last_val;
+        }
+    });
 }
 Spread.adapt = function(v, type) {
     if (!v) return Spread.empty();
