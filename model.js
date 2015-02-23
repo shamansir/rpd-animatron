@@ -32,10 +32,10 @@ Spread.is = function(val, type) {
     return val.is(type);
 }
 Spread.zip = function(spreads, res_type, map_fn) {
-    return new Spread(res_type, function() {
+    return new Spread(res_type, function(signal) {
         var trg = [];
         var finished = [];
-        var signal = Kefir.emitter();
+        var signal = signal || Kefir.emitter();
         for (var i = 0; i < spreads.length; i++) {
             trg.push(Kefir.repeat((function(i) {
                 return function(cycle) {
@@ -54,7 +54,6 @@ Spread.zip = function(spreads, res_type, map_fn) {
         };
         zipped.onEnd(function() { stream_finished = true; });
         zipped.onValue(function(v) { last_val = v; });
-        // Spread.iter has an internal signal, may we reuse it?
         return function() {
             if (stream_finished) return Spread.STOP;
             signal.emit();

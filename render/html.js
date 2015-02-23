@@ -26,16 +26,12 @@ function renderSpread(prop, f) {
             },
             always: function(bodyElm, inlets, outlets) {
                 clearNode(holder);
-                if (outlets[prop].length() === 0) {
-                    holder.innerText = holder.textContent = '-';
-                } else {
-                    var itemElm;
-                    outlets[prop].tap(function(item) {
-                        itemElm = document.createElement('span');
-                        f(itemElm, item);
-                        holder.appendChild(itemElm);
-                    });
-                }
+                var itemElm;
+                outlets[prop].iter().onValue(function(item) {
+                    itemElm = document.createElement('span');
+                    f(itemElm, item);
+                    holder.appendChild(itemElm);
+                });
             }
         }
     };
@@ -55,11 +51,11 @@ Rpd.noderenderer('anm/render', 'html', function() {
             });
         },
         always: function(bodyElm, inlets, outlets) {
-            if (!inlets.what || inlets.what.empty()) return;
+            if (!inlets.what) return;
             player.stop();
             if (player.anim) player.anim.unregister();
             var root = new anm.Element();
-            inlets.what.tap(function(child) {
+            inlets.what.iter().onValue(function(child) {
                 if (!child) return;
                 root.add(child);
             });
