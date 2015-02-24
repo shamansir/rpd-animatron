@@ -37,11 +37,11 @@ Spread.zip = function(spreads, res_type, map_fn) {
         var finished = [];
         var signal = signal || Kefir.emitter();
         for (var i = 0; i < spreads.length; i++) {
+            if (!spreads[i]) return function() { return Spread.STOP; };
             trg.push(Kefir.repeat((function(i) {
                 return function(cycle) {
                     if (cycle === 1) finished.push(i);
-                    return (spreads[i] || Spread.empty)
-                           .iter((cycle > 0) ? signal.toProperty(undefined) : signal);
+                    return spreads[i].iter((cycle > 0) ? signal.toProperty(undefined) : signal);
                 }
             })(i)));
         };
