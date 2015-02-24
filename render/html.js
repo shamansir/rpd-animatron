@@ -68,14 +68,14 @@ Rpd.noderenderer('anm/render', 'html', function() {
 
 Rpd.channelrenderer('anm/colors', 'html', {
     show: function(target, value, repr) {
-        if (value.length() == 1) {
+        /* if (value.length() == 1) {
             target.classList.add('rpd-anm-one-color');
             target.style.backgroundColor = value.get(0);
-        } else {
+        } else { */
             target.innerText = target.textContent = value.toString();
             target.style.backgroundColor = 'transparent';
             target.classList.remove('rpd-anm-one-color');
-        }
+        // }
     }
 });
 

@@ -20,6 +20,9 @@ function Spread(type, iter_fn) {
 Spread.prototype.iter = function(signal) {
     return this.rule(signal);
 }
+Spread.prototype.empty = function() {
+    return this.is(Spread.EMPTY);
+}
 Spread.prototype.is = function(type) {
     return this.type === type;
 }
@@ -37,7 +40,7 @@ Spread.zip = function(spreads, res_type, map_fn) {
         var finished = [];
         var signal = signal || Kefir.emitter();
         for (var i = 0; i < spreads.length; i++) {
-            if (!spreads[i]) return function() { return Spread.STOP; };
+            if (!spreads[i] || spreads[i].empty()) return function() { return Spread.STOP; };
             trg.push(Kefir.repeat((function(i) {
                 return function(cycle) {
                     if (cycle === 1) finished.push(i);
