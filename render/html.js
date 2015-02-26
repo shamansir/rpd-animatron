@@ -27,7 +27,9 @@ function renderSpread(prop, f) {
             always: function(bodyElm, inlets, outlets) {
                 clearNode(holder);
                 var itemElm;
+                console.log('iter start');
                 outlets[prop].iter().onValue(function(item) {
+                    console.log('iter next');
                     itemElm = document.createElement('span');
                     f(itemElm, item);
                     holder.appendChild(itemElm);

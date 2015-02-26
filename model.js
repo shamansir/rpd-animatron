@@ -44,6 +44,7 @@ Spread.zip = function(spreads, res_type, map_fn) {
             trg.push(Kefir.repeat((function(i) {
                 return function(cycle) {
                     if (cycle === 1) finished.push(i);
+                    if (cycle > Spread.MAX_REPEATS) throw new Error('Probably you\'re in infinite loop, set Spread.MAX_REPEATS to Inifinity if you are not.');
                     return spreads[i].iter((cycle > 0) ? signal.toProperty(undefined) : signal);
                 }
             })(i)));
@@ -56,11 +57,11 @@ Spread.zip = function(spreads, res_type, map_fn) {
         if (map_fn) {
             zipped = zipped.map(function(vals) { return map_fn.apply(null, vals); });
         };
-        zipped.onEnd(function() { stream_finished = true; });
-        zipped.onValue(function(v) { last_val = v; });
+        zipped.onValue(function(v) { last_val = v; })
+              .onEnd(function() { stream_finished = true; });
         return function() {
-            if (stream_finished) return Spread.STOP;
             signal.emit();
+            if (stream_finished) return Spread.STOP;
             return last_val;
         }
     });
@@ -98,6 +99,8 @@ Spread.fromArray = function(arr, type) {
     });
 }
 
+Spread.MAX_REPEATS = 1000;
+
 Spread.STOP = '_STOP_';
 
 Spread.EMPTY = 'Empty';
@@ -113,7 +116,7 @@ Spread.ELEMENTS = 'Elements';
 function minMaxSpread(a, b, count) {
     var min = Math.min(a, b) || 0,
         max = Math.max(a, b) || 0;
-    var count = count || 1;
+    var count = (count > 1) ? count : 1;
     return new Spread(Spread.NUMBERS, function() {
         if (min !== max) {
             var step = (max - min) / (count - 1);
@@ -128,9 +131,10 @@ function minMaxSpread(a, b, count) {
                 return Spread.STOP;
             };
         } else {
+            var to_do = count;
             return function() {
-                if (!count) return Spread.STOP;
-                count--; return min;
+                if (!to_do) return Spread.STOP;
+                to_do--; return min;
             }
         }
     });

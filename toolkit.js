@@ -45,9 +45,11 @@ Rpd.nodetype('anm/color', {
         'color': { type: 'anm/colors' }
     },
     process: function(inlets) {
+        console.log('gen start');
         return { 'color':
             Spread.zip([ inlets.red, inlets.green, inlets.blue, inlets.alpha ], COLORS,
                          function(r, g, b, a) {
+                             console.log('gen next');
                              return 'rgba(' + (r ? Math.round(r) : 0) + ',' +
                                               (g ? Math.round(g) : 0) + ',' +
                                               (b ? Math.round(b) : 0) + ',' +
