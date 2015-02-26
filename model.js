@@ -1,5 +1,12 @@
 // Spread
 
+// Spread is an iterator and a stream of values in one. When `spread.iter()` was called without
+// any argument, the resulting stream acts synchonously and blocks any other stream for the time
+// of iteration. If another stream was passed to `spread.iter(<signal_stream>)`, this stream acts
+// as a signal to emit next values asynchronously in the resulting stream. This way, for example,
+// when spread.iter(Kefir.interval(50).take(10)).log() was called, values from the spread will be
+// emitted every 50ms, 10 times (or less, if source spread will end before).
+
 function Spread(type, iter_fn) {
     this.type = type;
     this.rule = function(signal) {
