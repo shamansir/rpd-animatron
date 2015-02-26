@@ -24,11 +24,11 @@ Rpd.nodetype('anm/spread', {
         'count': { type: 'core/number', default: 5 }
     },
     outlets: {
-        'number': { type: 'anm/numbers' }
+        'spread': { type: 'anm/numbers' }
     },
     process: function(inlets) {
         return {
-            'number': minMaxSpread(inlets.min, inlets.max, inlets.count)
+            'spread': minMaxSpread(inlets.min, inlets.max, inlets.count)
         };
     }
 });
@@ -76,25 +76,25 @@ Rpd.nodetype('anm/pair', {
     }
 });
 
-Rpd.nodetype('anm/rect', {
-    name: 'rect',
+Rpd.nodetype('anm/shape', {
+    name: 'shape',
     inlets: {
-        'point': { type: 'anm/pairs'  },
+        'pos':   { type: 'anm/pairs'  },
         'color': { type: 'anm/colors' },
         'size':  { type: 'anm/pairs'  }
     },
     outlets: {
-        'rect': { type: 'anm/elements' }
+        'shape': { type: 'anm/elements' }
     },
     process: function(inlets) {
-        return { 'rect':
-            Spread.zip([ inlets.point, inlets.color, inlets.size ], ELEMENTS,
-                         function(point, color, size) {
-                            var point = point || new Pair(0, 0);
+        return { 'shape':
+            Spread.zip([ inlets.pos, inlets.color, inlets.size ], ELEMENTS,
+                         function(pos, color, size) {
+                            var pos = pos || new Pair(0, 0);
                             var color = color || '#000';
                             var size = size || new Pair(15, 15);
                             return new anm.Element()
-                                          .move(point.a, point.b)
+                                          .move(pos.a, pos.b)
                                           .rect(0, 0,
                                                 size.a, size.b)
                                           .fill(color);

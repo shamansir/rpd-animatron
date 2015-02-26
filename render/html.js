@@ -5,7 +5,7 @@ Rpd.noderenderer('anm/color', 'html',
 );
 
 Rpd.noderenderer('anm/spread', 'html',
-    renderSpread('number', function(elm, num) {
+    renderSpread('spread', function(elm, num) {
         elm.innerText = elm.textContent = num.toFixed(3);
     })
 );
