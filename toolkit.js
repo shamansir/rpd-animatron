@@ -15,6 +15,7 @@ Rpd.channeltype('anm/numbers',   { adapt: S(NUMBERS),  show: stringify });
 Rpd.channeltype('anm/pairs',     { adapt: S(PAIRS),    show: stringify, accept: accept(PAIRS)    });
 Rpd.channeltype('anm/colors',    { adapt: S(COLORS),   show: stringify, accept: accept(COLORS)   });
 Rpd.channeltype('anm/elements',  { adapt: S(ELEMENTS), show: stringify, accept: accept(ELEMENTS) });
+Rpd.channeltype('anm/shapetype');
 
 Rpd.nodetype('anm/spread', {
     name: 'spread',
@@ -79,25 +80,32 @@ Rpd.nodetype('anm/pair', {
 Rpd.nodetype('anm/shape', {
     name: 'shape',
     inlets: {
-        'pos':   { type: 'anm/pairs'  },
-        'color': { type: 'anm/colors' },
-        'size':  { type: 'anm/pairs'  }
+        'pos':    { type: 'anm/pairs',  default: new Pair(0, 0)   },
+        'color':  { type: 'anm/colors', default: 'rgba(30,60,60)' },
+        //'stroke': { type: 'anm/colors', default: 'transparent'    },
+        'size':   { type: 'anm/pairs',  default: new Pair(15, 15) },
+        'type':   { type: 'anm/shapetype', default: 'rect', hidden: true }
     },
     outlets: {
         'shape': { type: 'anm/elements' }
     },
     process: function(inlets) {
+        if (!inlets.type) return;
         return { 'shape':
             Spread.zip([ inlets.pos, inlets.color, inlets.size ], ELEMENTS,
                          function(pos, color, size) {
-                            var pos = pos || new Pair(0, 0);
-                            var color = color || '#000';
-                            var size = size || new Pair(15, 15);
-                            return new anm.Element()
-                                          .move(pos.a, pos.b)
-                                          .rect(0, 0,
-                                                size.a, size.b)
-                                          .fill(color);
+                            return function() {
+                                var elm = new Element();
+                                elm.move(pos.a, pos.b);
+                                switch (inlets.type) {
+                                    case 'dot':  elm.dot(0, 0); break;
+                                    case 'rect': elm.rect(0, 0, size.a, size.b); break;
+                                    case 'oval': elm.oval(0, 0, size.a, size.b); break;
+                                    case 'triangle': elm.triangle(0, 0, size.a, size.b); break;
+                                }
+                                elm.fill(color);
+                                return elm;
+                            }
                          })
         };
     }
