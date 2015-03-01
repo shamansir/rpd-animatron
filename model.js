@@ -74,7 +74,7 @@ Spread.zip = function(spreads, res_type, map_fn) {
     });
 }
 Spread.adapt = function(v, type) {
-    if (!v) return Spread.empty();
+    if (typeof v === 'undefined') return Spread.empty();
     if (Array.isArray(v)) return Spread.fromArray(v, type);
     if (!(v instanceof Spread)) return Spread.fromValue(v, type);
     return v;
@@ -106,7 +106,7 @@ Spread.fromArray = function(arr, type) {
     });
 }
 Spread.of = function(val, type) {
-    if (!val) return Spread.empty();
+    if (typeof val === 'undefined') return Spread.empty();
     if (Array.isArray(val)) return Spread.fromArray(val, type);
     return Spread.fromValue(val, type);
 }
