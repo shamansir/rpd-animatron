@@ -77,13 +77,13 @@ Rpd.nodetype('anm/pair', {
     }
 });
 
-Rpd.nodetype('anm/shape', {
-    name: 'shape',
+Rpd.nodetype('anm/primitive', {
+    name: 'primitive',
     inlets: {
-        'pos':    { type: 'anm/pairs',  default: new Pair(0, 0)   },
-        'color':  { type: 'anm/colors', default: 'rgba(30,60,60)' },
+        'pos':    { type: 'anm/pairs',  default: Spread.of(new Pair(0, 0), PAIRS) },
+        'color':  { type: 'anm/colors', default: Spread.of('rgba(255,60,60,1)', COLORS) },
         //'stroke': { type: 'anm/colors', default: 'transparent'    },
-        'size':   { type: 'anm/pairs',  default: new Pair(15, 15) },
+        'size':   { type: 'anm/pairs',  default: Spread.of(new Pair(15, 15), PAIRS) },
         'type':   { type: 'anm/shapetype', default: 'rect', hidden: true }
     },
     outlets: {
@@ -95,7 +95,7 @@ Rpd.nodetype('anm/shape', {
             Spread.zip([ inlets.pos, inlets.color, inlets.size ], ELEMENTS,
                          function(pos, color, size) {
                             return function() {
-                                var elm = new Element();
+                                var elm = new anm.Element();
                                 elm.move(pos.a, pos.b);
                                 switch (inlets.type) {
                                     case 'dot':  elm.dot(0, 0); break;
@@ -111,18 +111,7 @@ Rpd.nodetype('anm/shape', {
     }
 });
 
-Rpd.nodetype('anm/render', function() {
-    var element;
-    return {
-        name: 'render',
-        inlets: {
-            'what': { type: 'anm/elements' },
-        },
-        process: function() { }
-    };
-});
-
-/* Rpd.nodetype('anm/cross', {
+Rpd.nodetype('anm/cross', {
     name: 'cross',
     inlets: {
         'parent': { type: 'anm/elements' },
@@ -141,4 +130,15 @@ Rpd.nodetype('anm/render', function() {
                          })
         };
     }
-}); */
+});
+
+Rpd.nodetype('anm/render', function() {
+    var element;
+    return {
+        name: 'render',
+        inlets: {
+            'what': { type: 'anm/elements' },
+        },
+        process: function() { }
+    };
+});

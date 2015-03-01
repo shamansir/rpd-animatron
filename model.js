@@ -105,6 +105,11 @@ Spread.fromArray = function(arr, type) {
         };
     });
 }
+Spread.of = function(val, type) {
+    if (!val) return Spread.empty();
+    if (Array.isArray(val)) return Spread.fromArray(val, type);
+    return Spread.fromValue(val, type);
+}
 
 Spread.MAX_REPEATS = 1000;
 
