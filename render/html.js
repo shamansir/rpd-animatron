@@ -10,9 +10,9 @@ Rpd.noderenderer('anm/spread', 'html',
     })
 );
 
-Rpd.noderenderer('anm/pair', 'html',
-    renderSpread('pair', function(elm, pair) {
-        elm.innerText = elm.textContent = pair.toString();
+Rpd.noderenderer('anm/vector', 'html',
+    renderSpread('vector', function(elm, vector) {
+        elm.innerText = elm.textContent = vector.toString();
     })
 );
 

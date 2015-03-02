@@ -7,12 +7,12 @@ function stringify(v) { return v.toString(); };
 function accept(type) { return function(v) { return Spread.is(v, type); } };
 
 var NUMBERS = Spread.NUMBERS,
-    PAIRS = Spread.PAIRS,
+    VECTORS = Spread.VECTORS,
     COLORS = Spread.COLORS,
     ELEMENTS = Spread.ELEMENTS;
 
 Rpd.channeltype('anm/numbers',   { adapt: S(NUMBERS),  show: stringify });
-Rpd.channeltype('anm/pairs',     { adapt: S(PAIRS),    show: stringify, accept: accept(PAIRS)    });
+Rpd.channeltype('anm/vectors',   { adapt: S(VECTORS),  show: stringify, accept: accept(VECTORS)  });
 Rpd.channeltype('anm/colors',    { adapt: S(COLORS),   show: stringify, accept: accept(COLORS)   });
 Rpd.channeltype('anm/elements',  { adapt: S(ELEMENTS), show: stringify, accept: accept(ELEMENTS) });
 Rpd.channeltype('anm/shapetype');
@@ -58,20 +58,20 @@ Rpd.nodetype('anm/color', {
     }
 });
 
-Rpd.nodetype('anm/pair', {
-    name: 'pair',
+Rpd.nodetype('anm/vector', {
+    name: 'vector',
     inlets: {
-        'a': { type: 'anm/numbers', default: 0 },
-        'b': { type: 'anm/numbers', default: 0 }
+        'x': { type: 'anm/numbers', default: 0 },
+        'y': { type: 'anm/numbers', default: 0 }
     },
     outlets: {
-        'pair': { type: 'anm/pairs' }
+        'vector': { type: 'anm/vectors' }
     },
     process: function(inlets) {
-        return { 'pair':
-            Spread.zip([ inlets.a, inlets.b ], PAIRS,
-                         function(a, b) {
-                            return new Pair(a, b);
+        return { 'vector':
+            Spread.zip([ inlets.x, inlets.y ], VECTORS,
+                         function(x, y) {
+                            return new Vector(x, y);
                          })
         };
     }
@@ -80,10 +80,10 @@ Rpd.nodetype('anm/pair', {
 Rpd.nodetype('anm/primitive', {
     name: 'primitive',
     inlets: {
-        'pos':    { type: 'anm/pairs',  default: Spread.of(new Pair(0, 0), PAIRS) },
-        'color':  { type: 'anm/colors', default: Spread.of('rgba(255,60,60,1)', COLORS) },
+        'pos':    { type: 'anm/vectors', default: Spread.of(new Vector(0, 0),    VECTORS) },
+        'color':  { type: 'anm/colors',  default: Spread.of('rgba(255,60,60,1)', COLORS) },
         //'stroke': { type: 'anm/colors', default: 'transparent'    },
-        'size':   { type: 'anm/pairs',  default: Spread.of(new Pair(15, 15), PAIRS) },
+        'size':   { type: 'anm/vectors', default: Spread.of(new Vector(15, 15),  VECTORS) },
         'type':   { type: 'anm/shapetype', default: 'rect', hidden: true }
     },
     outlets: {
@@ -96,12 +96,12 @@ Rpd.nodetype('anm/primitive', {
                          function(pos, color, size) {
                             return function() {
                                 var elm = new anm.Element();
-                                elm.move(pos.a, pos.b);
+                                elm.move(pos.x, pos.y);
                                 switch (inlets.type) {
                                     case 'dot':  elm.dot(0, 0); break;
-                                    case 'rect': elm.rect(0, 0, size.a, size.b); break;
-                                    case 'oval': elm.oval(0, 0, size.a, size.b); break;
-                                    case 'triangle': elm.triangle(0, 0, size.a, size.b); break;
+                                    case 'rect': elm.rect(0, 0, size.x, size.y); break;
+                                    case 'oval': elm.oval(0, 0, size.x, size.y); break;
+                                    case 'triangle': elm.triangle(0, 0, size.x, size.y); break;
                                 }
                                 elm.fill(color);
                                 return elm;
@@ -115,7 +115,7 @@ Rpd.nodetype('anm/cross', {
     name: 'cross',
     inlets: {
         'parent': { type: 'anm/elements' },
-        'child': { type: 'anm/elements' }
+        'child':  { type: 'anm/elements' }
     },
     outlets: {
         'parent': { type: 'anm/elements' }

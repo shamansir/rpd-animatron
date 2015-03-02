@@ -116,10 +116,10 @@ Spread.MAX_REPEATS = 1000;
 Spread.STOP = '_STOP_';
 
 Spread.EMPTY = 'Empty';
-Spread.UNKNOWN = 'Empty';
+Spread.UNKNOWN  = 'Empty';
 
 Spread.NUMBERS = 'Numbers';
-Spread.PAIRS = 'Pairs';
+Spread.VECTORS = 'Vectors';
 Spread.COLORS = 'Colors';
 Spread.ELEMENTS = 'Elements';
 
@@ -152,9 +152,9 @@ function minMaxSpread(a, b, count) {
     });
 }
 
-// Pair
+// Vector
 
-function Pair(a, b) {
-    this.a = a || 0;
-    this.b = b || 0;
+function Vector(x, y) {
+    this.x = x || 0;
+    this.y = y || 0;
 }
