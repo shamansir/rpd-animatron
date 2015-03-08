@@ -36,6 +36,8 @@ Rpd.noderenderer('anm/primitive', 'html', {
     }
 });
 
+var RENDER_WIDTH = 140,
+    RENDER_HEIGHT = 140;
 Rpd.noderenderer('anm/render', 'html', function() {
     var player;
     return {
@@ -43,10 +45,11 @@ Rpd.noderenderer('anm/render', 'html', function() {
             var trg = document.createElement('div');
             bodyElm.appendChild(trg);
             player = anm.createPlayer(trg, {
-                width: 140,
-                height: 140,
+                width: RENDER_WIDTH,
+                height: RENDER_HEIGHT,
                 controlsEnabled: false,
-                repeat: true
+                repeat: true,
+                duration: Infinity
             });
         },
         always: function(bodyElm, inlets, outlets) {
@@ -54,6 +57,10 @@ Rpd.noderenderer('anm/render', 'html', function() {
             player.stop();
             //if (player.anim) player.anim.unregister();
             var root = new anm.Element();
+            root.sx = 1 / 4;
+            root.sy = 1 / 4;
+            root.x = RENDER_WIDTH  / 2;
+            root.y = RENDER_HEIGHT / 2;
             inlets.what.iter().onValue(function(child) {
                 if (!child) return;
                 root.add(child());

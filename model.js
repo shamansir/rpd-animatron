@@ -158,3 +158,6 @@ function Vector(x, y) {
     this.x = x || 0;
     this.y = y || 0;
 }
+Vector.prototype.toString = function() {
+    return '(' + this.x.toFixed(3) + ';' + this.y.toFixed(3) + ')';
+}

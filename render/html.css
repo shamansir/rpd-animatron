@@ -22,19 +22,25 @@
     overflow: scroll;
 }
 
+.rpd-anm-tk-node.rpd-anm-spread .rpd-body > table,
+.rpd-anm-tk-node.rpd-anm-vector .rpd-body > table {
+    width: 100%;
+}
+
 .rpd-anm-tk-node.rpd-anm-spread .rpd-body div > span,
-.rpd-anm-tk-node.rpd-anm-pair .rpd-body div > span {
-    float: left;
-    clear: left;
+.rpd-anm-tk-node.rpd-anm-vector .rpd-body div > span {
+    float: right;
+    clear: right;
+    font-size: 0.9em;
 }
 
 .rpd-anm-tk-node.rpd-anm-spread .rpd-body div > span:hover,
-.rpd-anm-tk-node.rpd-anm-pair .rpd-body div > span:hover {
+.rpd-anm-tk-node.rpd-anm-vector .rpd-body div > span:hover {
     background-color: rgba(0,0,66,0.2);
 }
 
 .rpd-anm-tk-node.rpd-anm-spread .rpd-body td > div,
-.rpd-anm-tk-node.rpd-anm-pair .rpd-body td > div {
+.rpd-anm-tk-node.rpd-anm-vector .rpd-body td > div {
     max-height: 200px;
     overflow: scroll;
 }
@@ -50,6 +56,10 @@
 
 .rpd-anm-tk-node.rpd-anm-spread .rpd-inlet .rpd-value-holder.rpd-editor-enabled .rpd-value {
     display: none;
+}
+
+.rpd-anm-tk-node.rpd-anm-render canvas {
+    background-color: rgba(0, 0, 0, .5);
 }
 
 /* .rpd-anm-tk-node .rpd-inlet .rpd-name,
