@@ -6,15 +6,18 @@ function S(type) {
 function stringify(v) { return v.toString(); };
 function accept(type) { return function(v) { return Spread.is(v, type); } };
 
-var NUMBERS = Spread.NUMBERS,
-    VECTORS = Spread.VECTORS,
-    COLORS = Spread.COLORS,
-    ELEMENTS = Spread.ELEMENTS;
+var NUMBERS  = Spread.NUMBERS,
+    VECTORS  = Spread.VECTORS,
+    COLORS   = Spread.COLORS,
+    ELEMENTS = Spread.ELEMENTS,
+    FORCES   = Spread.FORCES;
 
 Rpd.channeltype('anm/numbers',   { adapt: S(NUMBERS),  show: stringify });
 Rpd.channeltype('anm/vectors',   { adapt: S(VECTORS),  show: stringify, accept: accept(VECTORS)  });
 Rpd.channeltype('anm/colors',    { adapt: S(COLORS),   show: stringify, accept: accept(COLORS)   });
 Rpd.channeltype('anm/elements',  { adapt: S(ELEMENTS), show: stringify, accept: accept(ELEMENTS) });
+Rpd.channeltype('anm/force',     { show: function(v) { return v ? '[Force]' : 'None'; },
+                                   accept: function(v) { return typeof v === 'function'; } });
 Rpd.channeltype('anm/shapetype');
 
 Rpd.nodetype('anm/spread', {
@@ -81,9 +84,11 @@ Rpd.nodetype('anm/primitive', {
     name: 'primitive',
     inlets: {
         'pos':    { type: 'anm/vectors', default: Spread.of(new Vector(0, 0),    VECTORS) },
-        'color':  { type: 'anm/colors',  default: Spread.of('rgba(255,60,60,1)', COLORS) },
+        'color':  { type: 'anm/colors',  default: Spread.of('rgba(255,60,60,1)', COLORS)  },
         //'stroke': { type: 'anm/colors', default: 'transparent'    },
         'size':   { type: 'anm/vectors', default: Spread.of(new Vector(15, 15),  VECTORS) },
+        'angle':  { type: 'anm/numbers', default: Spread.of(               0.0,  NUMBERS) },
+        //'mass':   { type: 'anm/numbers', default: Spread.of(               1.0,  NUMBERS) },
         'type':   { type: 'anm/shapetype', default: 'rect', hidden: true }
     },
     outlets: {
@@ -92,11 +97,11 @@ Rpd.nodetype('anm/primitive', {
     process: function(inlets) {
         if (!inlets.type) return;
         return { 'shape':
-            Spread.zip([ inlets.pos, inlets.color, inlets.size ], ELEMENTS,
-                         function(pos, color, size) {
-                            return function() {
-                                var elm = new anm.Element();
+            Spread.zip([ inlets.pos, inlets.color, inlets.size, inlets.angle/*, inlets.mass*/ ], ELEMENTS,
+                         function(pos, color, size, angle, mass) {
+                            return function(elm) {
                                 elm.move(pos.x, pos.y);
+                                elm.rotate(angle * (Math.PI / 180));
                                 switch (inlets.type) {
                                     case 'dot':  elm.dot(0, 0); break;
                                     case 'rect': elm.rect(0, 0, size.x, size.y); break;
@@ -104,14 +109,59 @@ Rpd.nodetype('anm/primitive', {
                                     case 'triangle': elm.triangle(0, 0, size.x, size.y); break;
                                 }
                                 elm.fill(color);
-                                return elm;
+                                //elm._mass = mass;
+                                //return function() {};
                             }
                          })
         };
     }
 });
 
-Rpd.nodetype('anm/cross', {
+Rpd.nodetype('anm/up', {
+    name: 'up',
+    outlets: {
+        'force': { type: 'anm/force' }
+    },
+    process: function(inlets) {
+        return {
+            'force': function() {
+                return function(trg, dt) {
+                    trg.y += (dt * 10);
+                }
+            }
+        }
+    }
+});
+
+Rpd.nodetype('anm/particles', {
+    name: 'particles',
+    inlets: {
+        'particle': { type: 'anm/elements' },
+        'force':    { type: 'anm/force'    } // force === function[elm](dt, life_t)
+        //''
+        //'rule':     { type: 'anm/rule'    } // rule === function(prev_elm, next_elm)
+        //'from':     { type: 'anm/vectors', default: Spread.of(new Vector(15, 15),  VECTORS) }
+    },
+    outlets: {
+        'system': { type: 'anm/elements' }
+    },
+    process: function(inlets) {
+        return {
+            'system': Spread.zip([ inlets.particle, Spread.of(inlets.force, FORCES) ], ELEMENTS,
+                                 function(particle, force) {
+                                    return function(elm) {
+                                        particle(elm);
+                                        var update = force();
+                                        return function(dt) {
+                                            update(elm, dt);
+                                        }
+                                    }
+                                })
+        }
+    }
+});
+
+/* Rpd.nodetype('anm/cross', {
     name: 'cross',
     inlets: {
         'parent': { type: 'anm/elements' },
@@ -130,7 +180,7 @@ Rpd.nodetype('anm/cross', {
                          })
         };
     }
-});
+}); */
 
 Rpd.nodetype('anm/render', function() {
     var element;

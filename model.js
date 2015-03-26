@@ -118,10 +118,11 @@ Spread.STOP = '_STOP_';
 Spread.EMPTY = 'Empty';
 Spread.UNKNOWN  = 'Empty';
 
-Spread.NUMBERS = 'Numbers';
-Spread.VECTORS = 'Vectors';
-Spread.COLORS = 'Colors';
+Spread.NUMBERS  = 'Numbers';
+Spread.VECTORS  = 'Vectors';
+Spread.COLORS   = 'Colors';
 Spread.ELEMENTS = 'Elements';
+Spread.FORCES   = 'Forces';
 
 // Implementations
 

@@ -61,9 +61,11 @@ Rpd.noderenderer('anm/render', 'html', function() {
             root.sy = 1 / 4;
             root.x = RENDER_WIDTH  / 2;
             root.y = RENDER_HEIGHT / 2;
-            inlets.what.iter().onValue(function(child) {
-                if (!child) return;
-                root.add(child());
+            inlets.what.iter().onValue(function(prepare) {
+                var child = new anm.Element();
+                var update = prepare(child);
+                if (update) child.modify(function(t, dt) { update(dt); });
+                root.add(child);
             });
             player.load(root);
             player.play();
