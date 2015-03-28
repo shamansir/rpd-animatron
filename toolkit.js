@@ -124,9 +124,11 @@ Rpd.nodetype('anm/up', {
     },
     process: function(inlets) {
         return {
-            'force': function() {
-                return function(trg, dt) {
-                    trg.y += (dt * 10);
+            'force': function(trg) {
+                trg._life = 0;
+                return function(t, dt) {
+                    trg._life = t;
+                    trg.y = (trg._life * 500);
                 }
             }
         }
@@ -151,9 +153,9 @@ Rpd.nodetype('anm/particles', {
                                  function(particle, force) {
                                     return function(elm) {
                                         particle(elm);
-                                        var update = force();
-                                        return function(dt) {
-                                            update(elm, dt);
+                                        var update = force(elm);
+                                        return function(t, dt) {
+                                            update(t, dt);
                                         }
                                     }
                                 })

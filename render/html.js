@@ -49,13 +49,13 @@ Rpd.noderenderer('anm/render', 'html', function() {
                 height: RENDER_HEIGHT,
                 controlsEnabled: false,
                 repeat: true,
-                duration: Infinity
+                infiniteDuration: true
             });
         },
         always: function(bodyElm, inlets, outlets) {
             if (!inlets.what) return;
             player.stop();
-            //if (player.anim) player.anim.unregister();
+            if (player.anim) player.anim = null;
             var root = new anm.Element();
             root.sx = 1 / 4;
             root.sy = 1 / 4;
@@ -64,7 +64,7 @@ Rpd.noderenderer('anm/render', 'html', function() {
             inlets.what.iter().onValue(function(prepare) {
                 var child = new anm.Element();
                 var update = prepare(child);
-                if (update) child.modify(function(t, dt) { update(dt); });
+                if (update) child.modify(function(t, dt) { update(t, dt); });
                 root.add(child);
             });
             player.load(root);
