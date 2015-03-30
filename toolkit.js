@@ -125,16 +125,16 @@ Rpd.nodetype('anm/up', {
     process: function(inlets) {
         return {
             'force': function(trg) {
-                trg._life = 0;
-                return function(t, dt) {
-                    trg._life = t;
-                    trg.y = (trg._life * 500);
+                return function(life) {
+                    trg.y = (life * 500);
                 }
             }
         }
     }
 });
 
+var SEED = 1 / 8;
+var LIFETIME = 2; // seconds
 Rpd.nodetype('anm/particles', {
     name: 'particles',
     inlets: {
@@ -153,9 +153,12 @@ Rpd.nodetype('anm/particles', {
                                  function(particle, force) {
                                     return function(elm) {
                                         particle(elm);
+                                        var initial = Math.random() * SEED;
+                                        elm._life = initial;
                                         var update = force(elm);
                                         return function(t, dt) {
-                                            update(t, dt);
+                                            elm._life = (initial + (t / LIFETIME)) % 1;
+                                            update(elm._life);
                                         }
                                     }
                                 })
