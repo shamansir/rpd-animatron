@@ -117,30 +117,25 @@ Rpd.nodetype('anm/primitive', {
     }
 });
 
-Rpd.nodetype('anm/up', {
+/* Rpd.nodetype('anm/down', {
     name: 'up',
     outlets: {
         'force': { type: 'anm/force' }
     },
     process: function(inlets) {
         return {
-            'force': function(trg) {
-                return function(life) {
-                    trg.y = (life * 500);
-                }
+            'force': return function(life) {
+                return new Vector(0, life * 500);
             }
         }
     }
-});
+}); */
 
-var SEED = 1 / 8;
-var LIFETIME = 2; // seconds
 Rpd.nodetype('anm/particles', {
     name: 'particles',
     inlets: {
         'particle': { type: 'anm/elements' },
-        'force':    { type: 'anm/force'    } // force === function[elm](dt, life_t)
-        //''
+        'force':    { type: 'anm/force'    } // force === function(life_t) => Vector
         //'rule':     { type: 'anm/rule'    } // rule === function(prev_elm, next_elm)
         //'from':     { type: 'anm/vectors', default: Spread.of(new Vector(15, 15),  VECTORS) }
     },
@@ -148,17 +143,25 @@ Rpd.nodetype('anm/particles', {
         'system': { type: 'anm/elements' }
     },
     process: function(inlets) {
+        var lifetime = 2, // seconds
+            lifetime_range = 0.4; // seconds
+        var origin = new Vector(0, 0),
+            pos_range = new Vector(242, 5);
+        var speed = 340,
+            speed_range = 150;
+        var acceleration = new Vector(0, -150);
+        // colors, angle, angle_range
         return {
             'system': Spread.zip([ inlets.particle, Spread.of(inlets.force, FORCES) ], ELEMENTS,
-                                 function(particle, force) {
+                                 function(particle/*, force*/) {
                                     return function(elm) {
                                         particle(elm);
-                                        var initial = Math.random() * SEED;
-                                        elm._life = initial;
-                                        var update = force(elm);
+                                        //var initial = Math.random() * SEED;
+                                        //elm._life = initial;
+                                        //var update = force(elm);
                                         return function(t, dt) {
-                                            elm._life = (initial + (t / LIFETIME)) % 1;
-                                            update(elm._life);
+                                            //elm._life = (initial + (t / LIFETIME)) % 1;
+                                            //update(elm._life);
                                         }
                                     }
                                 })
