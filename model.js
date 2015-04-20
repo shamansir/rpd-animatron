@@ -1,24 +1,24 @@
 // Spread
 
-// Spread is an iterator and a stream of values in one. When `spread.iter()` was called without
+// Spread is an iterator and a stream of values in one. When `spread.iter()` is called without
 // any argument, the resulting stream acts synchonously and blocks any other stream for the time
 // of iteration. If another stream was passed to `spread.iter(<signal_stream>)`, this stream acts
 // as a signal to emit next values asynchronously in the resulting stream. This way, for example,
 // when spread.iter(Kefir.interval(50).take(10)).log() was called, values from the spread will be
 // emitted every 50ms, 10 times (or less, if source spread will end before).
 
-function Spread(type, iter_fn) {
+function Spread(type, iter) {
     this.type = type;
     this.rule = function(signal) {
-        var iter = iter_fn();
+        var next = iter(signal);
         if (signal) {
-            return signal.map(function() { return iter(); })
+            return signal.map(function() { return next(); })
                          .takeWhile(function(v) { return (v !== Spread.STOP); });
 
         } else {
             return Kefir.fromBinder(function(emitter) {
                 var v;
-                while ((v = iter()) !== Spread.STOP) { emitter.emit(v); }
+                while ((v = next()) !== Spread.STOP) { emitter.emit(v); }
                 emitter.end();
             });
         }
