@@ -9,23 +9,13 @@
 
 function Spread(type, iter) {
     this.type = type;
-    this.rule = function(signal) {
-        var next = iter(signal);
-        if (signal) {
-            return signal.map(function() { return next(); })
-                         .takeWhile(function(v) { return (v !== Spread.STOP); });
-
-        } else {
-            return Kefir.fromBinder(function(emitter) {
-                var v;
-                while ((v = next()) !== Spread.STOP) { emitter.emit(v); }
-                emitter.end();
-            });
-        }
-    };
+    this.iter_f = iter;
 }
-Spread.prototype.iter = function(signal) {
-    return this.rule(signal);
+Spread.prototype.iterator = function() {
+    return Spread._makeIterator(this.iter_f);
+}
+Spread.prototype.stream = function(signal) {
+    return Spread._makeStream(this.iter_f, signal);
 }
 Spread.prototype.empty = function() {
     return this.is(Spread.EMPTY);
@@ -36,6 +26,21 @@ Spread.prototype.is = function(type) {
 Spread.prototype.toString = function() {
     return '[' + this.type + ']';
 }
+Spread._makeIterator = function(iter_f) { return iter_f(); }
+Spread._makeStream = function(iter_f, signal) {
+    var next = iter_f(signal);
+    if (signal) {
+        return signal.map(function() { return next(); })
+                     .takeWhile(function(v) { return (v !== Spread.STOP); });
+
+    } else {
+        return Kefir.fromBinder(function(emitter) {
+            var v;
+            while ((v = next()) !== Spread.STOP) { emitter.emit(v); }
+            emitter.end();
+        });
+    }
+}
 Spread.is = function(val, type) {
     if (!val) return false;
     if (!(val instanceof Spread)) return false;
@@ -43,6 +48,22 @@ Spread.is = function(val, type) {
 }
 Spread.zip = function(spreads, res_type, map_fn) {
     return new Spread(res_type, function(signal) {
+        var iters = [];
+        var step = Kefir.emitter();
+        for (var i = 0; i < spreads.length; i++) {
+            if (!spreads[i] || spreads[i].empty()) return function() { return Spread.STOP; };
+        }
+        for (var i = 0; i < spreads.length; i++) {
+            iters.push(spreads[i].iterator());
+        }
+        if (signal) {
+            signal.map(function() {
+
+            });
+        } else {
+
+        }
+
         var trg = [];
         var finished = [];
         var signal = signal || Kefir.emitter();
