@@ -26,7 +26,7 @@ Spread.prototype.is = function(type) {
 Spread.prototype.toString = function() {
     return '[' + this.type + ']';
 }
-Spread._makeIterator = function(iter_f) { return iter_f(); }
+Spread._makeIterator = function(iter_f) { return iter_f; }
 Spread._makeStream = function(iter_f, signal) {
     var next = iter_f(signal);
     if (signal) {
@@ -56,10 +56,11 @@ Spread.zip = function(spreads, res_type, map_fn) {
         for (var i = 0; i < spreads.length; i++) {
             iters.push(spreads[i].iterator());
         }
-        if (signal) {
-            signal.map(function() {
+        step.map(function() {
 
-            });
+        });
+        if (signal) {
+            step.sampledBy(signal)
         } else {
 
         }
