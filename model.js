@@ -28,7 +28,7 @@ Spread.prototype.toString = function() {
 }
 Spread._makeIterator = function(iter_f) { return iter_f; }
 Spread._makeStream = function(iter_f, signal) {
-    var next = iter_f(signal);
+    var next = iter_f();
     if (signal) {
         return signal.map(function() { return next(); })
                      .takeWhile(function(v) { return (v !== Spread.STOP); });
@@ -46,52 +46,32 @@ Spread.is = function(val, type) {
     if (!(val instanceof Spread)) return false;
     return val.is(type);
 }
-Spread.zip = function(spreads, res_type, map_fn) {
-    return new Spread(res_type, function(signal) {
+Spread.join = function(spreads, res_type, map_fn) {
+    return new Spread(res_type, function() {
         var iters = [];
-        var step = Kefir.emitter();
+
         for (var i = 0; i < spreads.length; i++) {
             if (!spreads[i] || spreads[i].empty()) return function() { return Spread.STOP; };
         }
-        for (var i = 0; i < spreads.length; i++) {
+
+        for (i = 0; i < spreads.length; i++) {
             iters.push(spreads[i].iterator());
         }
-        step.map(function() {
 
-        });
-        if (signal) {
-            step.sampledBy(signal)
-        } else {
+        var to_go = spreads.length;
 
-        }
-
-        var trg = [];
-        var finished = [];
-        var signal = signal || Kefir.emitter();
-        for (var i = 0; i < spreads.length; i++) {
-            if (!spreads[i] || spreads[i].empty()) return function() { return Spread.STOP; };
-            trg.push(Kefir.repeat((function(i) {
-                return function(cycle) {
-                    if (cycle === 1) finished.push(i);
-                    if (cycle > Spread.MAX_REPEATS) throw new Error('Probably you\'re in infinite loop, set Spread.MAX_REPEATS to Inifinity if you are not.');
-                    return spreads[i].iter((cycle > 0) ? signal.toProperty(undefined) : signal);
-                }
-            })(i)));
-        };
-        var zipped = Kefir.zip(trg).takeWhile(function() {
-            return (finished.length < spreads.length);
-        });
-        var stream_finished = false;
-        var last_val;
-        if (map_fn) {
-            zipped = zipped.map(function(vals) { return map_fn.apply(null, vals); });
-        };
-        zipped.onValue(function(v) { last_val = v; })
-              .onEnd(function() { stream_finished = true; });
         return function() {
-            signal.emit();
-            if (stream_finished) return Spread.STOP;
-            return last_val;
+            var result = [];
+            for (var i = 0; i < iters.length; i++) {
+                var next = iters[i]();
+                if (next === Spread.STOP) {
+                    if (!to_go--) return Spread.STOP;
+                    iters[i] = spreads[i].iterator(); // replaces a value, so it's safe
+                    next = iters[i](); // we ensured spreads are non-empty, so STOP won't be here
+                }
+                result.push(next);
+            }
+            return result;
         }
     });
 }
