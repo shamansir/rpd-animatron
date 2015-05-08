@@ -50,13 +50,13 @@ Rpd.nodetype('anm/color', {
     },
     process: function(inlets) {
         return { 'color':
-            Spread.zip([ inlets.red, inlets.green, inlets.blue, inlets.alpha ], COLORS,
-                         function(r, g, b, a) {
-                             return 'rgba(' + (r ? Math.round(r) : 0) + ',' +
-                                              (g ? Math.round(g) : 0) + ',' +
-                                              (b ? Math.round(b) : 0) + ',' +
-                                              (a || 0) + ')';
-                         })
+            Spread.join([ inlets.red, inlets.green, inlets.blue, inlets.alpha ], COLORS,
+                          function(r, g, b, a) {
+                              return 'rgba(' + (r ? Math.round(r) : 0) + ',' +
+                                               (g ? Math.round(g) : 0) + ',' +
+                                               (b ? Math.round(b) : 0) + ',' +
+                                               (a || 0) + ')';
+                          })
         };
     }
 });
@@ -72,10 +72,10 @@ Rpd.nodetype('anm/vector', {
     },
     process: function(inlets) {
         return { 'vector':
-            Spread.zip([ inlets.x, inlets.y ], VECTORS,
-                         function(x, y) {
-                            return new Vector(x, y);
-                         })
+            Spread.join([ inlets.x, inlets.y ], VECTORS,
+                          function(x, y) {
+                              return new Vector(x, y);
+                          })
         };
     }
 });
@@ -97,22 +97,22 @@ Rpd.nodetype('anm/primitive', {
     process: function(inlets) {
         if (!inlets.type) return;
         return { 'shape':
-            Spread.zip([ inlets.pos, inlets.color, inlets.size, inlets.angle/*, inlets.mass*/ ], ELEMENTS,
-                         function(pos, color, size, angle, mass) {
-                            return function(elm) {
-                                elm.move(pos.x, pos.y);
-                                elm.rotate(angle * (Math.PI / 180));
-                                switch (inlets.type) {
-                                    case 'dot':  elm.dot(0, 0); break;
-                                    case 'rect': elm.rect(0, 0, size.x, size.y); break;
-                                    case 'oval': elm.oval(0, 0, size.x, size.y); break;
-                                    case 'triangle': elm.triangle(0, 0, size.x, size.y); break;
-                                }
-                                elm.fill(color);
-                                //elm._mass = mass;
-                                //return function() {};
-                            }
-                         })
+            Spread.join([ inlets.pos, inlets.color, inlets.size, inlets.angle/*, inlets.mass*/ ], ELEMENTS,
+                          function(pos, color, size, angle, mass) {
+                              return function(elm) {
+                                  elm.move(pos.x, pos.y);
+                                  elm.rotate(angle * (Math.PI / 180));
+                                  switch (inlets.type) {
+                                      case 'dot':  elm.dot(0, 0); break;
+                                      case 'rect': elm.rect(0, 0, size.x, size.y); break;
+                                      case 'oval': elm.oval(0, 0, size.x, size.y); break;
+                                      case 'triangle': elm.triangle(0, 0, size.x, size.y); break;
+                                  }
+                                  elm.fill(color);
+                                  //elm._mass = mass;
+                                  //return function() {};
+                              }
+                          })
         };
     }
 });
@@ -152,19 +152,19 @@ Rpd.nodetype('anm/particles', {
         var acceleration = new Vector(0, -150);
         // colors, angle, angle_range
         return {
-            'system': Spread.zip([ inlets.particle, Spread.of(inlets.force, FORCES) ], ELEMENTS,
-                                 function(particle/*, force*/) {
-                                    return function(elm) {
-                                        particle(elm);
-                                        //var initial = Math.random() * SEED;
-                                        //elm._life = initial;
-                                        //var update = force(elm);
-                                        return function(t, dt) {
-                                            //elm._life = (initial + (t / LIFETIME)) % 1;
-                                            //update(elm._life);
-                                        }
-                                    }
-                                })
+            'system': Spread.join([ inlets.particle, Spread.of(inlets.force, FORCES) ], ELEMENTS,
+                                  function(particle/*, force*/) {
+                                     return function(elm) {
+                                         particle(elm);
+                                         //var initial = Math.random() * SEED;
+                                         //elm._life = initial;
+                                         //var update = force(elm);
+                                         return function(t, dt) {
+                                             //elm._life = (initial + (t / LIFETIME)) % 1;
+                                             //update(elm._life);
+                                         }
+                                     }
+                                 })
         }
     }
 });
@@ -180,7 +180,7 @@ Rpd.nodetype('anm/particles', {
     },
     process: function(inlets) {
         return { 'parent':
-            Spread.merge([ inlets.parent, inlets.child ], ELEMENTS,
+            Spread.join([ inlets.parent, inlets.child ], ELEMENTS,
                          function(parent, child) {
                             if (!parent || !child) return (parent || child);
                             if (parent === child) return;

@@ -100,7 +100,7 @@ function renderSpread(prop, f) {
             always: function(bodyElm, inlets, outlets) {
                 clearNode(holder);
                 var itemElm;
-                outlets[prop].iter().onValue(function(item) {
+                outlets[prop].stream().onValue(function(item) {
                     itemElm = document.createElement('span');
                     f(itemElm, item);
                     holder.appendChild(itemElm);

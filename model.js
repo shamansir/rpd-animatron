@@ -32,7 +32,6 @@ Spread._makeStream = function(iter_f, signal) {
     if (signal) {
         return signal.map(function() { return next(); })
                      .takeWhile(function(v) { return (v !== Spread.STOP); });
-
     } else {
         return Kefir.fromBinder(function(emitter) {
             var v;
