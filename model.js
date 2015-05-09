@@ -70,7 +70,7 @@ Spread.join = function(spreads, res_type, map_fn) {
                 }
                 result.push(next);
             }
-            return result;
+            return map_fn ? map_fn.call(null, result) : result;
         }
     });
 }

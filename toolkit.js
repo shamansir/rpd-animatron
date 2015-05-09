@@ -56,7 +56,7 @@ Rpd.nodetype('anm/color', {
                                                (g ? Math.round(g) : 0) + ',' +
                                                (b ? Math.round(b) : 0) + ',' +
                                                (a || 0) + ')';
-                          })
+                          });
         };
     }
 });
