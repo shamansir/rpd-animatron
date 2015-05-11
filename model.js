@@ -26,11 +26,11 @@ Spread.prototype.is = function(type) {
 Spread.prototype.toString = function() {
     return '[' + this.type + ']';
 }
-Spread._makeIterator = function(iter_f) { return iter_f; }
+Spread._makeIterator = function(iter_f) { return iter_f(); }
 Spread._makeStream = function(iter_f, signal) {
     var next = iter_f();
     if (signal) {
-        return signal.map(function() { return next(); })
+        return signal.map(next)
                      .takeWhile(function(v) { return (v !== Spread.STOP); });
     } else {
         return Kefir.fromBinder(function(emitter) {
@@ -70,7 +70,7 @@ Spread.join = function(spreads, res_type, map_fn) {
                 }
                 result.push(next);
             }
-            return map_fn ? map_fn.call(null, result) : result;
+            return map_fn ? map_fn.apply(null, result) : result;
         }
     });
 }
