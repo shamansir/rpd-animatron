@@ -103,10 +103,10 @@ Rpd.nodetype('anm/primitive', {
                                   elm.move(pos.x, pos.y);
                                   elm.rotate(angle * (Math.PI / 180));
                                   switch (inlets.type) {
-                                      case 'dot':  elm.dot(0, 0); break;
-                                      case 'rect': elm.rect(0, 0, size.x, size.y); break;
-                                      case 'oval': elm.oval(0, 0, size.x, size.y); break;
-                                      case 'triangle': elm.triangle(0, 0, size.x, size.y); break;
+                                      case 'dot':  elm.dot(); break;
+                                      case 'rect': elm.rect(size.x, size.y); break;
+                                      case 'oval': elm.oval(size.x, size.y); break;
+                                      case 'triangle': elm.triangle(size.x, size.y); break;
                                   }
                                   elm.fill(color);
                                   //elm._mass = mass;
