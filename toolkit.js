@@ -24,7 +24,7 @@ Rpd.nodetype('anm/spread', {
     name: 'spread',
     inlets: {
         'min':   { type: 'core/number', default: 0 },
-        'max':   { type: 'core/number', default: 100 },
+        'max':   { type: 'core/number', default: 1 },
         'count': { type: 'core/number', default: 5 }
     },
     outlets: {
@@ -40,9 +40,9 @@ Rpd.nodetype('anm/spread', {
 Rpd.nodetype('anm/color', {
     name: 'color',
     inlets: {
-        'red':   { type: 'anm/numbers', default: 255 },
-        'green': { type: 'anm/numbers', default: 255 },
-        'blue':  { type: 'anm/numbers', default: 255 },
+        'red':   { type: 'anm/numbers', default: 1 },
+        'green': { type: 'anm/numbers', default: 1 },
+        'blue':  { type: 'anm/numbers', default: 1 },
         'alpha': { type: 'anm/numbers', default: 1 }
     },
     outlets: {
@@ -52,9 +52,9 @@ Rpd.nodetype('anm/color', {
         return { 'color':
             Spread.join([ inlets.red, inlets.green, inlets.blue, inlets.alpha ], COLORS,
                           function(r, g, b, a) {
-                              return 'rgba(' + (r ? Math.round(r) : 0) + ',' +
-                                               (g ? Math.round(g) : 0) + ',' +
-                                               (b ? Math.round(b) : 0) + ',' +
+                              return 'rgba(' + (r ? Math.round(r * 255) : 0) + ',' +
+                                               (g ? Math.round(g * 255) : 0) + ',' +
+                                               (b ? Math.round(b * 255) : 0) + ',' +
                                                (a || 0) + ')';
                           })
         };
