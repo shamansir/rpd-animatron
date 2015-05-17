@@ -1,11 +1,30 @@
 // Spread
 
-// Spread is an iterator and a stream of values in one. When `spread.iter()` is called without
-// any argument, the resulting stream acts synchonously and blocks any other stream for the time
-// of iteration. If another stream was passed to `spread.iter(<signal_stream>)`, this stream acts
+// Spread is an iterator and a stream of values in one. To get an iterator from a spread,
+// call `var next = spread.iterator()`—it returns a function `next`, which, with every
+// call like `next()`, produces a next value until it's equal to `Spread.STOP`.
+//
+// To get a Kefir-compatible Stream of values from a Spread, call `var stream = spread.stream()`,
+// the returned stream will end when the values will end.
+//
+// If another stream was passed to `spread.stream(<signal_stream>)`, this stream acts
 // as a signal to emit next values asynchronously in the resulting stream. This way, for example,
-// when spread.iter(Kefir.interval(50).take(10)).log() was called, values from the spread will be
+// when spread.stream(Kefir.interval(50).take(10)).log() was called, values from the spread will be
 // emitted every 50ms, 10 times (or less, if source spread will end before).
+//
+// To create a Spread, you need to provide a type of its values (any string) and
+// a function which looks like:
+//
+// ```
+// var spread = new Spread('any',
+//     function() {
+//         <initialize iteration>;
+//         return function() {
+//            <any code>;
+//            return <next value or Spread.STOP>;
+//         }
+//     });
+// ```
 
 function Spread(type, iter) {
     this.type = type;
