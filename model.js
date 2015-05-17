@@ -60,17 +60,15 @@ Spread.join = function(spreads, res_type, map_fn) {
             finished.push(false);
         }
 
+        var to_go = spreads.length;
+
         return function() {
             var result = [];
             for (var i = 0; i < iters.length; i++) {
                 var next = iters[i]();
                 if (next === Spread.STOP) {
+                    if (!finished[i]) { to_go--; if (!to_go) return Spread.STOP; }
                     finished[i] = true;
-                    var all_finished = true;
-                    for (var j = 0; j < finished.length; j++) {
-                        all_finished = all_finished && finished[j];
-                    }
-                    if (all_finished) return Spread.STOP;
                     iters[i] = spreads[i].iterator(); // replaces a value, so it's safe
                     next = iters[i](); // we ensured spreads are non-empty, so STOP won't be here
                 }
