@@ -135,7 +135,8 @@ Rpd.nodetype('anm/particles', {
     name: 'particles',
     inlets: {
         'particle': { type: 'anm/elements' },
-        'force':    { type: 'anm/force'    } // force === function(life_t) => Vector
+        'force':    { type: 'anm/force',
+                      default: function(t) {} } // force === function(life_t) => Vector
         //'rule':     { type: 'anm/rule'    } // rule === function(prev_elm, next_elm)
         //'from':     { type: 'anm/vectors', default: Spread.of(new Vector(15, 15),  VECTORS) }
     },
