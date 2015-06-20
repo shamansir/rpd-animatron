@@ -52,7 +52,7 @@ Spread._makeStream = function(iter_f, signal) {
         return signal.map(next)
                      .takeWhile(function(v) { return (v !== Spread.STOP); });
     } else {
-        return Kefir.fromBinder(function(emitter) {
+        return Kefir.stream(function(emitter) {
             var v;
             while ((v = next()) !== Spread.STOP) { emitter.emit(v); }
             emitter.end();

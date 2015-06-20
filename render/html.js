@@ -27,7 +27,7 @@ Rpd.noderenderer('anm/primitive', 'html', {
         return {
             'type': {
                 default: function() { chooser.value = 'rect'; return 'rect'; },
-                valueOut: Kefir.fromEvent(chooser, 'change')
+                valueOut: Kefir.fromEvents(chooser, 'change')
                                .map(function() {
                                     return chooser.options[chooser.selectedIndex].value;
                                })
